@@ -51,8 +51,9 @@ trait TestKit {
     for {
       startQ <- actor.messageBuffer
       _ <- Console[F].println(s"Expecting: $messages in queue: $startQ")
+      expectedQ = startQ._2 ++ messages
       _ <- awaitCond(
-        actor.messageBuffer.map(_._2.intersect(messages) == messages),
+        actor.messageBuffer.map(_._2 == expectedQ),
         timeout,
         100.millis,
         s"expecting messages: $messages"
